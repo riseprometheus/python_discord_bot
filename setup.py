@@ -6,7 +6,7 @@ def main():
     token_file = "token.json"
     if not os.path.exists(token_file):
         print("Unable to locate token.json file\nGenerating new json file")
-        f = open(token_file, "W")
+        f = open(token_file, "w")
         f.write('{\n"password": TOKEN_HERE>}')
         f.close()
         print(f"Please update {token_file} with your discord bot token and rerun setup.py")

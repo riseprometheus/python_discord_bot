@@ -8,16 +8,18 @@ class MyClient(discord.Client):
     NAME = "Trouble Maker"
     PATRON_URL = "ConspiratorSoftworks.xyz"
     TIME_START = datetime.datetime.utcnow()
-
+    commands_called = 0
     async def on_ready(self):
         logging.info('Logged on as {0}!'.format(self.user))
 
     async def on_message(self, message):
         if not self.check_for_bot_message(message) and self.check_for_command_identifier(message):
             try:
-                function_name = getattr(MyClient, message.content[1:].lower())
+                args = message.content[1:].lower().split(" ")
+                function_name = getattr(MyClient, args[0])
                 # This should only ever be for bot commands so they should be awaited
                 await function_name(self, message)
+                self.commands_called += 1
             except AttributeError:
                 pass
 
@@ -45,9 +47,26 @@ class MyClient(discord.Client):
         time_diff = datetime.datetime.utcnow() - self.TIME_START
         embed_desc = (f"Uptime: {time_diff.days} Days, {time_diff.seconds // 3600} Hours, "
                       f"{time_diff.seconds // 60 % 60} Minutes, {time_diff.seconds % 60} Seconds\n"
-                      f"Servers Found on: {len(self.guilds)}")
-
+                      f"Servers Found On: {len(self.guilds)}\n"
+                      f"Commands Run Since Start Up: {self.commands_called}")
         await message.channel.send(embed=self.create_embed(embed_title, embed_desc, None, None))
+
+    async def move(self, message):
+        # check if sender is in voice channel
+
+        if message.author.voice:
+            try:
+                await message.mentions[0].edit(voice_channel=message.author.voice.channel)
+                embed_title = "Success!"
+                embed_desc = f"Moved {message.mentions[0].nick} to voice channel: {message.author.voice.channel.name}"
+                await message.channel.send(embed=self.create_embed(embed_title, embed_desc, None, None))
+            except discord.Forbidden:
+                logging.warning("Bot doesn't have correct permission to move user")
+            except Exception as e:
+                logging.warning(e)
+        else:
+            embed_desc = f"{message.author.nick}, please be in a voice channel to use this command"
+            await message.channel.send(embed=self.create_embed("Can't move user", embed_desc, None, 0xff0000))
 
     @staticmethod
     def check_for_bot_message(message):

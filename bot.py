@@ -6,10 +6,8 @@ from datetime import datetime
 import sys
 import getopt
 
-enable_log_files = False
 
-
-def init_environment():
+def init_environment(enable_log_files):
     # todo: set up later to set log directory to specific location
     log_format = '{"level":"%(levelname)s", "time":"%(asctime)s", "text":"%(message)s"}'
     if enable_log_files:
@@ -30,7 +28,22 @@ def init_environment():
 
 
 def main():
-    init_environment()
+    enable_log_files = False
+    argument_list = sys.argv[1:]
+    options = "hmo:"
+    long_options = ["log", "directory"]
+    try:
+        arguments, values = getopt.getopt(argument_list, options, long_options)
+        for currentArgument, currentValue in arguments:
+            if currentArgument in ("-l", "--log"):
+                enable_log_files = True
+            elif currentArgument in ("-d", "--directory"):
+                pass
+    except getopt.error as err:
+        # output error, and return with an error code
+        print(str(err))
+
+    init_environment(enable_log_files)
     bot = discord_bot.MyClient()
 
     if os.path.exists("token.json"):

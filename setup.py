@@ -14,7 +14,7 @@ def main():
 
     print(f"{token_file} looks good\nStarting to build docker image")
     try:
-        os.system("Docker build -t discord_bot:latest .")
+        os.system("docker build -t discord_bot:latest .")
     except Exception as e:
         print(e)
     print("Successfully built docker image")

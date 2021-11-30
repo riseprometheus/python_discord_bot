@@ -17,7 +17,7 @@ def init_environment(enable_log_files):
         else:
             pass
         now = datetime.now()
-        current_time_log = now.strftime("%H_%M_%S")
+        current_time_log = now.strftime("%Y-%m-%d-%H%M%S")
         log_format = '{"level":"%(levelname)s", "time":"%(asctime)s", "text":"%(message)s"}'
         logging.basicConfig(filename=f"{directory}/bot_log_{current_time_log}.log",
                             format=log_format, level=logging.INFO)

@@ -1,4 +1,4 @@
-import discord_bot
+import basicbot
 import json
 import os
 import logging
@@ -9,7 +9,7 @@ import getopt
 
 def init_environment(enable_log_files):
     # todo: set up later to set log directory to specific location
-    log_format = '{"level":"%(levelname)s", "time":"%(asctime)s", "text":"%(message)s"}'
+    log_format = '{"level":"%(levelname)s", "time":"%(asctime)s", "function":"%(funcName)s", "text":"%(message)s"}'
     if enable_log_files:
         directory = "./logs"
         if not os.path.exists('./logs'):
@@ -18,7 +18,6 @@ def init_environment(enable_log_files):
             pass
         now = datetime.now()
         current_time_log = now.strftime("%Y-%m-%d-%H%M%S")
-        log_format = '{"level":"%(levelname)s", "time":"%(asctime)s", "text":"%(message)s"}'
         logging.basicConfig(filename=f"{directory}/bot_log_{current_time_log}.log",
                             format=log_format, level=logging.INFO)
     else:
@@ -44,7 +43,7 @@ def main():
         print(str(err))
 
     init_environment(enable_log_files)
-    bot = discord_bot.MyClient()
+    bot = basicbot.MyClient()
 
     if os.path.exists("token.json"):
         credentials = open("token.json")

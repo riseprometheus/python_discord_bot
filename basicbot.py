@@ -4,7 +4,6 @@ import datetime
 import channelhelper
 
 
-
 class MyClient(discord.Client):
     DEFAULT_COMMAND_IDENTIFIER = "!"
     command_identifier = DEFAULT_COMMAND_IDENTIFIER
